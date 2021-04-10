@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import firebase from './firebase/firebase';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgetPassword from './pages/forgetPassword';
+import {setCurrentUser} from './redux/user/userActions'
+import Home from './pages/Home';
 
-function App() {
+function App({setCurrentUser,history}) {
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth.onAuthStateChanged((user)=>{
+      
+        if(user){
+          setCurrentUser(user)
+        }else{
+          setCurrentUser(null)
+          history.push('/login')
+        }
+
+    })
+    return () => unsubscribe()
+}, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Switch>
+        <Route exact path='/' render={()=><Home/>}/>
+        <Route path='/login' component={Login}/>
+        <Route path='/register' component={Register}/>
+        <Route path='/forget' component={ForgetPassword}/>
+      </Switch>
+    </>
   );
 }
 
-export default App;
+export default connect(null,{setCurrentUser})(withRouter(App));

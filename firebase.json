@@ -1,0 +1,14 @@
+{
+  "hosting":{
+    "public":"./build"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}
+
+/* Project Console: https://console.firebase.google.com/project/slack-chat-app-c7800/overview
+Hosting URL: https://slack-chat-app-c7800.web.app */

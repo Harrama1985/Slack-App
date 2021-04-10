@@ -1,0 +1,76 @@
+{
+  "rules": {
+   	"channels":{
+      ".read": "auth !== null",
+      "$channelId": {
+        ".write": "auth !== null",
+        ".validate":"newData.hasChildren(['id','name','createdBy','description'])",
+        "id":{
+          ".validate":"newData.val() === $channelId"
+        },
+        "name":{
+          ".validate":"newData.val().length > 0"
+        },
+        "description":{
+          ".validate":"newData.val().length > 0"
+        }
+      }
+    },
+    "messages" : {
+      "$channelId":{
+        ".read": "auth !== null",
+        ".validate": "root.child('channels/'+$channelId).exists()",
+      	"$messageId":{
+          ".write": "auth !== null",
+          ".validate": "(newData.hasChildren(['content','createdBy','time']) && !newData.hasChildren(['image'])) || (newData.hasChildren(['image','createdBy','time']) && !newData.hasChildren(['content']))",
+          "content":{
+             ".validate":"newData.val().length > 0"
+          },
+          "image": {
+             ".validate":"newData.val().length > 0"
+          },
+          "createdBy" : {
+            ".validate": "newData.hasChildren(['id','name','avatar'])"
+          }       
+        }
+      }
+      
+        
+    },
+    "privateMessages": {
+    	"$uid1": {
+        "$uid2":{
+          ".read": "auth !== null && ($uid1 === auth.uid || $uid2 === auth.uid)" ,
+          "$messageId":{
+          ".write": "auth !== null",
+          ".validate": "(newData.hasChildren(['content','createdBy','time']) && !newData.hasChildren(['image'])) || (newData.hasChildren(['image','createdBy','time']) && !newData.hasChildren(['content']))",
+          "content":{
+             ".validate":"newData.val().length > 0"
+          },
+          "image": {
+             ".validate":"newData.val().length > 0"
+          },
+          "createdBy" : {
+            ".validate": "newData.hasChildren(['id','name','avatar'])"
+          }       
+        }
+        }
+      }
+    },
+    "presence":{
+      ".read": "auth !== null",
+      ".write": "auth !== null",
+    },
+    "typing":{
+      ".read": "auth !== null",
+      ".write": "auth !== null",
+    },
+    "users":{
+      ".read": "auth !== null",
+      "$uid":{
+        ".write": "auth !== null && $uid === auth.uid",
+        ".validate": "newData.hasChildren(['name','photoURL'])"         
+      }
+    }
+  }
+}
